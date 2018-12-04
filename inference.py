@@ -11,8 +11,10 @@ import json
 import os
 import sys 
 
+num_classes = 4
+
 checkpoint = torch.load("./models/custom_model13.model")
-model = resnet18(num_classes=4)
+model = resnet18(num_classes=num_classes) 
 
 model.load_state_dict(checkpoint)
 model.eval()

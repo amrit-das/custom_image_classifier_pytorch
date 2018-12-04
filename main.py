@@ -28,13 +28,19 @@ data_transforms = {
 }
 
 data_dir = 'Dataset'
+num_classes = 4
+batch_size = 4
+num_workers = 4
+
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
                                           data_transforms[x])
                   for x in ['train', 'val']}
-dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=4,
-                                             shuffle=True, num_workers=4)
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size,
+                                             shuffle=True, num_workers=num_workers)
               for x in ['train', 'val']}
+
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
+
 class_names = image_datasets['train'].classes
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -140,7 +146,7 @@ def visualize_model(model, num_images=6):
 
 model_ft = models.resnet18(pretrained=True)
 num_ftrs = model_ft.fc.in_features
-model_ft.fc = nn.Linear(num_ftrs, 4)
+model_ft.fc = nn.Linear(num_ftrs, num_classes)
 
 model_ft = model_ft.to(device)
 
