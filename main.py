@@ -41,7 +41,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print (device)
 
 def save_models(epochs, model):
-    torch.save(model.state_dict(), "custom_model{}.model".format(epochs))
+    torch.save(model.state_dict(), "./models/custom_model{}.model".format(epochs))
     print("Checkpoint Saved")
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
