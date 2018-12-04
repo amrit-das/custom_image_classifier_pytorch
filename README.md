@@ -29,6 +29,7 @@ Mac
 sudo pip install torch torchvision
 ```
 Windows
+
 PyTorch doesnot support Python 2.7 on Windows
 ```bash
 sudo pip3 install http://download.pytorch.org/whl/cu90/torch-0.4.1-cp35-cp35m-win_amd64.whl
