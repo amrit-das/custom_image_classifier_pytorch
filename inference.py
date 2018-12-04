@@ -8,14 +8,18 @@ from torch.autograd import Variable
 import torch.functional as F
 from PIL import Image
 import json
+import os
+import sys 
 
 checkpoint = torch.load("./models/custom_model13.model")
-model = resnet18(pretrained=True)
+model = resnet18(num_classes=4)
 
 model.load_state_dict(checkpoint)
 model.eval()
 
 def predict_image(image_path):
+    print("prediciton in progress")
+    image = Image.open(image_path)
     transformation = transforms.Compose([
         transforms.RandomResizedCrop(224),
         transforms.RandomHorizontalFlip(),
@@ -34,8 +38,8 @@ def predict_image(image_path):
     index = output.data.numpy().argmax()
     return index
 
-if __name__ == "main":
-    imagefile = "image.png"
+if __name__ == "__main__":
+    imagefile = sys.argv[1]
     imagepath = os.path.join(os.getcwd(),imagefile)
     prediction = predict_image(imagepath)
     print("Predicted Class: ",prediction)
