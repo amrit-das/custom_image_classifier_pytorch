@@ -10,7 +10,7 @@ python main.py
 ```
 In order to run the trained model, change the path to the model in inference.py and run:
 ```bash
-python inference.py
+python inference.py image_filename
 ```
 
 Required Libraries:
