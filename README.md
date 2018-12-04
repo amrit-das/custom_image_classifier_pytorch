@@ -4,9 +4,15 @@ The above code can be used/modified for Custom Dataset training and creation of 
 The code is still in beta-testing. Open for pull requests. 
 
 # Usage
+For training, put the training data in Dataset/train and testing data in Dataset/val and run the following code
 ```bash
-python main.py
+python main.py 
 ```
+In order to run the trained model, change the path to the model in inference.py and run:
+```bash
+python inference.py
+```
+
 Required Libraries:
   PyTorch - 0.4.1
   Cuda - Optional (For faster training)

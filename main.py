@@ -1,216 +1,155 @@
+from __future__ import print_function, division
 
 import torch
 import torch.nn as nn
-from torchvision.datasets import ImageFolder
-from torchvision.transforms import transforms
-from torch.utils.data import DataLoader
-from torch.optim import Adam
-from torch.autograd import Variable
+import torch.optim as optim
+from torch.optim import lr_scheduler
 import numpy as np
+import torchvision
+from torchvision import datasets, models, transforms
+import matplotlib.pyplot as plt
+import time
+import os
+import copy
 
+data_transforms = {
+    'train': transforms.Compose([
+        transforms.RandomResizedCrop(224),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+    'val': transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+}
 
-class Unit(nn.Module):
-    def __init__(self,in_channels,out_channels):
-        super(Unit,self).__init__()
+data_dir = 'Dataset'
+image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
+                                          data_transforms[x])
+                  for x in ['train', 'val']}
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=4,
+                                             shuffle=True, num_workers=4)
+              for x in ['train', 'val']}
+dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
+class_names = image_datasets['train'].classes
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print (device)
 
-        self.conv = nn.Conv2d(in_channels=in_channels,kernel_size=3,out_channels=out_channels,stride=1,padding=1)
-        self.bn = nn.BatchNorm2d(num_features=out_channels)
-        self.relu = nn.ReLU()
+def save_models(epochs, model):
+    torch.save(model.state_dict(), "custom_model{}.model".format(epochs))
+    print("Checkpoint Saved")
 
-    def forward(self,input):
-        output = self.conv(input)
-        output = self.bn(output)
-        output = self.relu(output)
+def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
+    since = time.time()
 
-        return output
-
-class SimpleNet(nn.Module):
-    def __init__(self,num_classes=4):
-        super(SimpleNet,self).__init__()
-
-        #Create 14 layers of the unit with max pooling in between
-        self.unit1 = Unit(in_channels=3,out_channels=32)
-        self.unit2 = Unit(in_channels=32, out_channels=32)
-        self.unit3 = Unit(in_channels=32, out_channels=32)
-
-        self.pool1 = nn.MaxPool2d(kernel_size=2)
-
-        self.unit4 = Unit(in_channels=32, out_channels=64)
-        self.unit5 = Unit(in_channels=64, out_channels=64)
-        self.unit6 = Unit(in_channels=64, out_channels=64)
-        self.unit7 = Unit(in_channels=64, out_channels=64)
-
-        self.pool2 = nn.MaxPool2d(kernel_size=2)
-
-        self.unit8 = Unit(in_channels=64, out_channels=128)
-        self.unit9 = Unit(in_channels=128, out_channels=128)
-        self.unit10 = Unit(in_channels=128, out_channels=128)
-        self.unit11 = Unit(in_channels=128, out_channels=128)
-
-        self.pool3 = nn.MaxPool2d(kernel_size=2)
-
-        self.unit12 = Unit(in_channels=128, out_channels=128)
-        self.unit13 = Unit(in_channels=128, out_channels=128)
-        self.unit14 = Unit(in_channels=128, out_channels=128)
-
-        self.avgpool = nn.AvgPool2d(kernel_size=4)
-
-        #Add all the units into the Sequential layer in exact order
-        self.net = nn.Sequential(self.unit1, self.unit2, self.unit3, self.pool1, self.unit4, self.unit5, self.unit6
-                                 ,self.unit7, self.pool2, self.unit8, self.unit9, self.unit10, self.unit11, self.pool3,
-                                 self.unit12, self.unit13, self.unit14, self.avgpool)
-
-        self.fc = nn.Linear(in_features=128,out_features=num_classes)
-
-    def forward(self, input):
-        output = self.net(input)
-        output = output.view(-1,128)
-        output = self.fc(output)
-        return output
-
-#Define transformations for the training set, flip the images randomly, crop out and apply mean and std normalization
-train_transformations = transforms.Compose([
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomCrop(32,padding=4),
-    transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-])
-
-batch_size = 12
-
-#Load the training set
-train_set = ImageFolder(root="./Dataset/train",transform=train_transformations)
-
-#Create a loder for the training set
-train_loader = DataLoader(train_set,batch_size=batch_size,shuffle=True,num_workers=4) # NumWorker = 4 times number of GPU
-
-
-#Define transformations for the test set
-test_transformations = transforms.Compose([
-   transforms.ToTensor(),
-    transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))
-
-])
-
-#Load the test set, note that train is set to False
-test_set = ImageFolder(root="./Dataset/val",transform=test_transformations)
-
-#Create a loder for the test set, note that both shuffle is set to false for the test loader
-test_loader = DataLoader(test_set,batch_size=batch_size,shuffle=False,num_workers=4)
-
-#Check if gpu support is available
-cuda_avail = torch.cuda.is_available()
-print cuda_avail, ": Cuda available"
-#Create model, optimizer and loss function
-model = SimpleNet(num_classes=4)
-
-if cuda_avail:
-    model.cuda()
-
-optimizer = Adam(model.parameters(), lr=0.001,weight_decay=0.0001)
-loss_fn = nn.CrossEntropyLoss()
-
-#Create a learning rate adjustment function that divides the learning rate by 10 every 30 epochs
-def adjust_learning_rate(epoch):
-
-    lr = 0.001
-
-    if epoch > 180:
-        lr = lr / 1000000
-    elif epoch > 150:
-        lr = lr / 100000
-    elif epoch > 120:
-        lr = lr / 10000
-    elif epoch > 90:
-        lr = lr / 1000
-    elif epoch > 60:
-        lr = lr / 100
-    elif epoch > 30:
-        lr = lr / 10
-
-    for param_group in optimizer.param_groups:
-        param_group["lr"] = lr
-
-
-
-
-def save_models(epoch):
-    torch.save(model.state_dict(), "custom_model{}.model".format(epoch))
-    print("Checkpoint saved")
-
-def test():
-    model.eval()
-    test_acc = 0.0
-    for i, (images, labels) in enumerate(test_loader):
-
-        if cuda_avail:
-                images = Variable(images.cuda())
-                labels = Variable(labels.cuda())
-
-        #Predict classes using images from the test set
-        outputs = model(images)
-        _,prediction = torch.max(outputs.data, 1)
-        prediction = prediction.cpu().numpy()
-        test_acc += torch.sum(prediction == labels.data)
-
-
-
-    #Compute the average acc and loss over all 10000 test images
-    test_acc = test_acc / 10000
-
-    return test_acc
-
-def train(num_epochs):
+    best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
 
     for epoch in range(num_epochs):
-        model.train()
-        train_acc = 0.0
-        train_loss = 0.0
-        for i, (images, labels) in enumerate(train_loader):
-            #Move images and labels to gpu if available
-            if cuda_avail:
-                images = Variable(images.cuda())
-                labels = Variable(labels.cuda())
+        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+        print('-' * 10)
 
-            #Clear all accumulated gradients
-            optimizer.zero_grad()
-            #Predict classes using images from the test set
-            outputs = model(images)
-            #Compute the loss based on the predictions and actual labels
-            loss = loss_fn(outputs,labels)
-            #Backpropagate the loss
-            loss.backward()
+        # Each epoch has a training and validation phase
+        for phase in ['train', 'val']:
+            if phase == 'train':
+                scheduler.step()
+                model.train()  # Set model to training mode
+            else:
+                model.eval()   # Set model to evaluate mode
 
-            #Adjust parameters according to the computed gradients
-            optimizer.step()
+            running_loss = 0.0
+            running_corrects = 0
 
-            train_loss += loss.cpu().item() * images.size(0)
-            _, prediction = torch.max(outputs.data, 1)
+            # Iterate over data.
+            for inputs, labels in dataloaders[phase]:
+                inputs = inputs.to(device)
+                labels = labels.to(device)
 
-            train_acc += torch.sum(prediction == labels.data)
+                # zero the parameter gradients
+                optimizer.zero_grad()
 
-        #Call the learning rate adjustment function
-        adjust_learning_rate(epoch)
+                # forward
+                # track history if only in train
+                with torch.set_grad_enabled(phase == 'train'):
+                    outputs = model(inputs)
+                    _, preds = torch.max(outputs, 1)
+                    loss = criterion(outputs, labels)
 
-        #Compute the average acc and loss over all 50000 training images
-        train_acc = train_acc / 50000
-        train_loss = train_loss / 50000
+                    # backward + optimize only if in training phase
+                    if phase == 'train':
+                        loss.backward()
+                        optimizer.step()
 
-        #Evaluate on the test set
-        test_acc = test()
+                # statistics
+                running_loss += loss.item() * inputs.size(0)
+                running_corrects += torch.sum(preds == labels.data)
 
-        # Save the model if the test acc is greater than our current best
-        if test_acc > best_acc:
-            save_models(epoch)
-            best_acc = test_acc
+            epoch_loss = running_loss / dataset_sizes[phase]
+            epoch_acc = running_corrects.double() / dataset_sizes[phase]
+
+            print('{} Loss: {:.4f} Acc: {:.4f}'.format(
+                phase, epoch_loss, epoch_acc))
+
+            # deep copy the model
+            if phase == 'train' and epoch_acc > best_acc:
+                save_models(epoch,model)
+                best_acc = epoch_acc
+                best_model_wts = copy.deepcopy(model.state_dict())
+
+        print()
+
+    time_elapsed = time.time() - since
+    print('Training complete in {:.0f}m {:.0f}s'.format(
+        time_elapsed // 60, time_elapsed % 60))
+    print('Best val Acc: {:4f}'.format(best_acc))
+
+    # load best model weights
+    model.load_state_dict(best_model_wts)
+    return model
+
+def visualize_model(model, num_images=6):
+    was_training = model.training
+    model.eval()
+    images_so_far = 0
+    fig = plt.figure()
+
+    with torch.no_grad():
+        for i, (inputs, labels) in enumerate(dataloaders['val']):
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+
+            outputs = model(inputs)
+            _, preds = torch.max(outputs, 1)
+
+            for j in range(inputs.size()[0]):
+                images_so_far += 1
+                ax = plt.subplot(num_images//2, 2, images_so_far)
+                ax.axis('off')
+                ax.set_title('predicted: {}'.format(class_names[preds[j]]))
+                imshow(inputs.cpu().data[j])
+
+                if images_so_far == num_images:
+                    model.train(mode=was_training)
+                    return
+        model.train(mode=was_training)
+
+model_ft = models.resnet18(pretrained=True)
+num_ftrs = model_ft.fc.in_features
+model_ft.fc = nn.Linear(num_ftrs, 4)
+
+model_ft = model_ft.to(device)
+
+criterion = nn.CrossEntropyLoss()
 
 
-        # Print the metrics
-        print("Epoch {}, Train Accuracy: {} , TrainLoss: {} , Test Accuracy: {}".format(epoch, train_acc, train_loss,test_acc))
+optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.001, momentum=0.9)
 
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 
-if __name__ == "__main__":
-    num_epochs = 100
-    train(num_epochs)
+model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
+                       num_epochs=25)
