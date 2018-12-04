@@ -14,7 +14,9 @@ python inference.py
 ```
 
 Required Libraries:
+
 PyTorch - 0.4.1
+
 Cuda - Optional (For faster training)
 
 # Installing requirements
