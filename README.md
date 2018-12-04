@@ -11,7 +11,7 @@ Required Libraries:
   PyTorch - 0.4.1
   Cuda - Optional (For faster training)
 
-#Installing requirements
+# Installing requirements
 Linux
 ```bash
 sudo pip install torch torchvision
