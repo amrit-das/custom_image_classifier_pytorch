@@ -8,7 +8,7 @@ python main.py
 ```
 In order to run the trained model, change the path to the model in inference.py and run:
 ```bash
-python inference.py image_filename
+python inference.py -i image_name_to_be_predicted -m model_name -n num_of_classes 
 ```
 
 Required Libraries:
