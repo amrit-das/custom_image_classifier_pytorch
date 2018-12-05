@@ -9,12 +9,13 @@ import torch.functional as F
 from PIL import Image
 import json
 import os
-import sys 
+import sys
 
 num_classes = 4
+path_to_model = "./models/custom_model13.model"
 
-checkpoint = torch.load("./models/custom_model13.model")
-model = resnet18(num_classes=num_classes) 
+checkpoint = torch.load(path_to_model)
+model = resnet18(num_classes=num_classes)
 
 model.load_state_dict(checkpoint)
 model.eval()
