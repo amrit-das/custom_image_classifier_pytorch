@@ -6,7 +6,7 @@ For training, put the training data in Dataset/train and testing data in Dataset
 ```bash
 python main.py 
 ```
-In order to run the trained model, change the path to the model in inference.py and run:
+In order to predict from trained model, place your image to be predicted in /Predict_Image and run:
 ```bash
 python inference.py -i image_name_to_be_predicted -m model_name -n num_of_classes 
 ```
