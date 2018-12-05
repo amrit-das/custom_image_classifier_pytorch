@@ -47,6 +47,14 @@ def predict_image(image_path):
     index = output.data.numpy().argmax()
     return index
 
+def class_mapping(index):
+    mapping=open('class_mapping.txt','r')
+    class_map={}
+    for line in mapping:
+        l=line.strip('\n').split('~')
+        class_map[l[1]]=l[0]
+    return class_map[str(index)]
+
 if __name__ == "__main__":
 
 
@@ -57,4 +65,5 @@ if __name__ == "__main__":
     #path_to_model = "./models/custom_model13.model"
 
     prediction = predict_image(imagepath)
-    print("Predicted Class: ",prediction)
+    name = class_mapping(prediction)
+    print("Predicted Class: ",name)
