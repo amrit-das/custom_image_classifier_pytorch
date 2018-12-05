@@ -12,8 +12,8 @@ import sys
 import argparse
 
 parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
-parser.add_argument('-i','--image', dest = 'image_path', required = True, help='Path to the image file')
-parser.add_argument('-m','--model', dest = 'model_path', required = True, help='Path to the model')
+parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
+parser.add_argument('-m','--model', dest = 'model_name', required = True, help='Path to the model')
 parser.add_argument('-n','--num_class',dest = 'num_classes', required = True, help='Number of training classes')
 args = parser.parse_args()
 
@@ -21,7 +21,7 @@ checkpoint = torch.load(path_to_model)
 model = resnet18(num_classes=num_classes)
 
 num_classes = args.num_classes
-path_to_model = args.model_path
+path_to_model = "./models"+args.model_path
 
 model.load_state_dict(checkpoint)
 model.eval()
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
 
     imagefile = args.image_path
-    imagepath = os.path.join(os.getcwd(),imagefile)
+    imagepath = "./Predict_Image"+imagefile
 
     #path_to_model = "./models/custom_model13.model"
 
