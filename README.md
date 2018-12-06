@@ -32,4 +32,9 @@ PyTorch doesnot support Python 2.7 on Windows
 ```bash
 sudo pip3 install http://download.pytorch.org/whl/cu90/torch-0.4.1-cp35-cp35m-win_amd64.whl
 pip3 install torchvision
-```
+``` 
+# References
+
+PyTorch Tutorials - (https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html)
+
+Medium Blogs
