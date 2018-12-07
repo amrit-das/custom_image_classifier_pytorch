@@ -17,12 +17,10 @@ parser.add_argument('-m','--model', dest = 'model_name', required = True, help='
 parser.add_argument('-n','--num_class',dest = 'num_classes', required = True, help='Number of training classes')
 args = parser.parse_args()
 
+path_to_model = "./models/"+args.model_name
 checkpoint = torch.load(path_to_model)
-model = resnet18(num_classes=num_classes)
 
-num_classes = args.num_classes
-path_to_model = "./models"+args.model_path
-
+model = resnet18(num_classes = int(args.num_classes))
 model.load_state_dict(checkpoint)
 model.eval()
 
@@ -57,13 +55,7 @@ def class_mapping(index):
 
 if __name__ == "__main__":
 
-
-
-    imagefile = args.image_path
-    imagepath = "./Predict_Image"+imagefile
-
-    #path_to_model = "./models/custom_model13.model"
-
+    imagepath = "./Predict_Image/"+args.image_name
     prediction = predict_image(imagepath)
     name = class_mapping(prediction)
     print("Predicted Class: ",name)
