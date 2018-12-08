@@ -34,6 +34,6 @@ Cuda - Optional (For faster training)
 ``` 
 # References
 
-PyTorch Tutorials - (https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html)
+PyTorch Tutorials - (https://pytorch.org/tutorials/beginner.html)
 
 Medium Blogs
