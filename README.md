@@ -11,13 +11,17 @@ In order to predict from trained model, place your image to be predicted in /Pre
 python inference.py -i image_name_to_be_predicted -m model_name -n num_of_classes 
 ```
 
-Required Libraries:
+# Required Packages:
 
 PyTorch - 0.4.1
 
+NumPy - 1.15.4
+
+OpenCV -  3.4.4
+
 Cuda - Optional (For faster training)
 
-# Installing requirements
+# Installing PyTorch
 Linux
 ```bash
 sudo pip install torch torchvision
