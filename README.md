@@ -31,9 +31,8 @@ OpenCV -  3.4.4
 
 Cuda - Optional (For faster training)
 
-``` 
 # References
 
-PyTorch Tutorials - (https://pytorch.org/tutorials/)
+PyTorch Tutorials - ( https://pytorch.org/tutorials/ )
 
 Medium Blogs
