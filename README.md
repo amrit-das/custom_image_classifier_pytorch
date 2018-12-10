@@ -1,4 +1,4 @@
-# Custom Image Training and Prediction API PyTorch
+# Custom Image Training and Classification API PyTorch
 Creating machine learning models, for object detection remains a challenge till date. This API is an opensource famework built with the help of PyTorch Framework. The API can be used for training models based on custom datasets. Its a ready to deploy platform to provide custom image training sets as input to a ResNet18 based transfer learning approach. Contributions are most Welcome as this repository is still under building. We are trying to add more and more features and make the work versatile. 
 
 Dataset : Contains the training and testing datasets
