@@ -7,7 +7,6 @@ import numpy as np
 from torch.autograd import Variable
 import torch.functional as F
 from PIL import Image
-import cv2
 import os
 import sys
 import argparse
