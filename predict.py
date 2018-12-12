@@ -7,6 +7,7 @@ import numpy as np
 from torch.autograd import Variable
 import torch.functional as F
 from PIL import Image
+import cv2
 import os
 import sys
 import argparse
@@ -23,6 +24,13 @@ checkpoint = torch.load(path_to_model)
 model = resnet18(num_classes = int(args.num_classes))
 model.load_state_dict(checkpoint)
 model.eval()
+
+seg_dir="segregation_folder"
+try:
+    os.mkdir(seg_dir)
+    print("Directory " , seg_dir ,  " Created ") 
+except OSError:
+    print("Directory " , seg_dir ,  " already created")
 
 def predict_image(image_path):
     print("prediciton in progress")
@@ -51,11 +59,23 @@ def class_mapping(index):
     for line in mapping:
         l=line.strip('\n').split('~')
         class_map[l[1]]=l[0]
+        # Create Directory for seggregation
+        dir_path="./"+seg_dir+"/"+l[0]
+        try:
+            os.mkdir(dir_path)
+            print("Directory " , dir_path ,  " Created ") 
+        except OSError:
+            print("Directory " , dir_path ,  " already created")
+
     return class_map[str(index)]
 
 if __name__ == "__main__":
 
     imagepath = "./Predict_Image/"+args.image_name
+    img = Image.open(imagepath)
     prediction = predict_image(imagepath)
     name = class_mapping(prediction)
     print("Predicted Class: ",name)
+    save_path = "./"+seg_dir+"/"+name+"/"+args.image_name
+    img.save(save_path)
+
