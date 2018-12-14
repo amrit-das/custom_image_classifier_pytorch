@@ -22,8 +22,7 @@ checkpoint = torch.load(path_to_model)
 
 model = resnet18(num_classes = int(args.num_classes))
 model.load_state_dict(checkpoint)
-model.eval()
-
+model.eval()	
 seg_dir="segregation_folder"
 try:
     os.mkdir(seg_dir)
@@ -51,6 +50,11 @@ def predict_image(image_path):
 
     index = output.data.numpy().argmax()
     return index
+def parameters():
+    hyp_param = open('param_predict.txt','r')
+    param = {}
+    for line in hyp_param:
+        l = line.strip('\n').split(':')
 
 def class_mapping(index):
     mapping=open('class_mapping.txt','r')

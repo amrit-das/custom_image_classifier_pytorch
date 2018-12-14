@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-
+import json
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -27,23 +27,33 @@ data_transforms = {
     ]),
 }
 
-root_dir = 'Dataset'
-num_classes = 4
-batch_size = 4
-num_workers = 4
+with open("hyper_params.json") as hp:
+    data = json.load(hp)
+    root_dir = data["root_directory"]
+    num_classes = data["num_classes"]
+    num_epochs = data["num_epochs"]
+    batch_size = data["batch_size"]
+    num_workers = data["num_workers"]
+    lr = data["learning_rate"]
+    optim_name = data["optimizer"] 
+    momentum = data["momentum"]
+    step_size = data["step_size"]
+    gamma = data["gamma"]
+
 
 image_datasets = {x: datasets.ImageFolder(os.path.join(root_dir, x),
                                           data_transforms[x])
-                  for x in ['train', 'val']}
+            for x in ['train', 'val']}
 
 dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size,
-                                             shuffle=True, num_workers=num_workers)
-              for x in ['train', 'val']}
+                                            shuffle=True, num_workers=num_workers)
+            for x in ['train', 'val']}
 
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 
 class_names = image_datasets['train'].classes
 class_mapping=open('class_mapping.txt','w')
+
 for x in range (0,len(class_names)):
 	class_mapping.write(class_names[x]+'~'+str(x)+'\n')
 class_mapping.close()
@@ -53,8 +63,10 @@ print (device)
 
 
 def save_models(epochs, model):
+    print()
     torch.save(model.state_dict(), "./models/custom_model{}.model".format(epochs))
     print("****----Checkpoint Saved----****")
+    print()
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -108,32 +120,6 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     model.load_state_dict(best_model_wts)
     return model
 
-def visualize_model(model, num_images=6):
-    was_training = model.training
-    model.eval()
-    images_so_far = 0
-    fig = plt.figure()
-
-    with torch.no_grad():
-        for i, (inputs, labels) in enumerate(dataloaders['val']):
-            inputs = inputs.to(device)
-            labels = labels.to(device)
-
-            outputs = model(inputs)
-            _, preds = torch.max(outputs, 1)
-
-            for j in range(inputs.size()[0]):
-                images_so_far += 1
-                ax = plt.subplot(num_images//2, 2, images_so_far)
-                ax.axis('off')
-                ax.set_title('predicted: {}'.format(class_names[preds[j]]))
-                imshow(inputs.cpu().data[j])
-
-                if images_so_far == num_images:
-                    model.train(mode=was_training)
-                    return
-        model.train(mode=was_training)
-
 model_ft = models.resnet18(pretrained=True)
 num_ftrs = model_ft.fc.in_features
 model_ft.fc = nn.Linear(num_ftrs, num_classes)
@@ -143,9 +129,8 @@ model_ft = model_ft.to(device)
 criterion = nn.CrossEntropyLoss()
 
 
-optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.001, momentum=0.9)
+optimizer_ft = optim.SGD(model_ft.parameters(), lr=lr, momentum=momentum)
 
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
 
-model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
-                       num_epochs=25)
+model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,num_epochs=num_epochs)
