@@ -6,7 +6,7 @@ Dataset : Contains the training and testing datasets
 
 models : Contains the trained models/checkpoints
 
-Predict Image : This folder is used to store the image/video to be predicted
+Predict Image : This folder is used to store the images/videowes to be predicted/segmented
 
 main.py : To train the data
 
