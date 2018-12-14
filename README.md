@@ -35,7 +35,7 @@ NumPy - 1.15.4
 
 OpenCV -  3.4.4
 
-Cuda - Optional (For faster training)
+Cuda - Optional 
 
 # References
 
