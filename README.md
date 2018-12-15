@@ -17,7 +17,7 @@ hyper_params.json : The json file contains all the hyper patameters and related 
 # Usage
 For training, put the training data in Dataset/train and testing data in Dataset/val and run the following code
 
-Before training the network, you can tune the network to your hyper parameters using the 'hyper_params.json' script. But it is advisable not to change any parameters that you may not be aware of, doing so might mess up the network.
+# Before training the network, you can tune the network to your hyper parameters using the 'hyper_params.json' script. But it is advisable not to change any parameters that you may not be aware of, doing so might mess up the network.
 
 ```bash
 python main.py 
