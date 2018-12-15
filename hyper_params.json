@@ -1,6 +1,6 @@
 {
     "root_directory"    :   "Dataset",
-    "num_classes"       :   4,
+    "num_classes"       :   20,
     "num_epochs"        :   50,
     "batch_size"        :   12,
     "num_workers"       :   4,

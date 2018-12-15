@@ -55,12 +55,12 @@ class_names = image_datasets['train'].classes
 class_mapping=open('class_mapping.txt','w')
 
 for x in range (0,len(class_names)):
-	class_mapping.write(class_names[x]+'~'+str(x)+'\n')
+    class_mapping.write(class_names[x]+'~'+str(x)+'\n')
 class_mapping.close()
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print (device)
-
+#device = torch.device("cpu")
 
 def save_models(epochs, model):
     print()
