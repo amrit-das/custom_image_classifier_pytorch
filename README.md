@@ -53,8 +53,10 @@ python train.py
 ### Predicting
 In order to predict from trained model, place your image to be predicted in Predict_Image and run:
 ```bash
-python predict.py -i image_name_to_be_predicted -m model_name -n num_of_classes 
+python predict.py -i image_name_to_be_predicted -m model_name -n num_of_classes -t
 ```
+Including -t means selecting segregating function and excluding it means selecting only predict function
+
 ## Version
 
 PyTorch - 0.4.1
