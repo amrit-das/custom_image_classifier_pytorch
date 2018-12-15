@@ -70,7 +70,7 @@ Cuda - Optional
 - Bounding Boxes
 
 
-## References
+## Reference
 
 PyTorch Tutorials - ( https://pytorch.org/tutorials/ )
 
