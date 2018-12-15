@@ -29,7 +29,8 @@ Creating machine learning models, for Image Clasification, built with the help o
 ## Installation
 
 - PyTorch can be installed from the website [pytorch.org](https://pytorch.org)
-  *If installing for ARM devices, follow the [Link](https://medium.com/hardware-interfacing/how-to-install-pytorch-v4-0-on-raspberry-pi-3b-odroids-and-other-arm-based-devices-91d62f2933c7)
+
+   *If installing for ARM devices, follow the [Link](https://medium.com/hardware-interfacing/how-to-install-pytorch-v4-0-on-raspberry-pi-3b-odroids-and-other-arm-based-devices-91d62f2933c7)
 - Example dataset can be downloaded from this [Link](https://download.pytorch.org/tutorial/hymenoptera_data.zip)
 - Clone the repository and Install requirements 
 ```bash
