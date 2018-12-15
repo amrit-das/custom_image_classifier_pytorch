@@ -8,7 +8,7 @@ Creating machine learning models, for Image Clasification, built with the help o
 
 ##### Predict Image : This folder is used to store the images/videoes to be predicted/segmented
 
-##### main.py : To train the data
+##### train.py : To train the data
 
 ##### predict.py : To predict from the trained model
 
@@ -48,7 +48,7 @@ Before training the network, you can tune the network to your hyper parameters u
 Once modified the hyperparameters, put the training data in Dataset/train and testing data in Dataset/val and run the following code
 
 ```bash
-python main.py
+python train.py
 ```
 ### Predicting
 In order to predict from trained model, place your image to be predicted in Predict_Image and run:
