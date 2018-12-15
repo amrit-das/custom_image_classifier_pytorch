@@ -76,4 +76,4 @@ Cuda - Optional
 
 PyTorch Tutorials - ( https://pytorch.org/tutorials/ )
 
-Medium Blogs
+Medium Blogs - ( https://medium.com/hardware-interfacing/ )
