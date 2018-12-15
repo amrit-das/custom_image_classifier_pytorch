@@ -12,9 +12,12 @@ import sys
 import argparse
 
 parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
-parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
-parser.add_argument('-m','--model', dest = 'model_name', required = True, help='Path to the model')
-parser.add_argument('-n','--num_class',dest = 'num_classes', required = True, help='Number of training classes')
+#parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
+#parser.add_argument('-m','--model', dest = 'model_name', required = True, help='Path to the model')
+#parser.add_argument('-n','--num_class',dest = 'num_classes', required = True, help='Number of training classes')
+#parser.add_argument('-p','--predict', dest = 'predict', help='Path to the image file')
+#parser.add_argument('-s','--segregate', dest = 'predict', required = True, help='Path to the model')
+
 args = parser.parse_args()
 
 path_to_model = "./models/"+args.model_name
@@ -62,7 +65,8 @@ def class_mapping(index):
     for line in mapping:
         l=line.strip('\n').split('~')
         class_map[l[1]]=l[0]
-        # Create Directory for seggregation
+        
+	# Create Directory for seggregation
         dir_path="./"+seg_dir+"/"+l[0]
         try:
             os.mkdir(dir_path)
