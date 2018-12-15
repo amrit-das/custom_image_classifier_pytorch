@@ -40,7 +40,7 @@ cd custom_image_classifier_pytorch
 sudo pip install -r requirements.txt
 ```
 ## Usage
-
+You can check the detailed usage @ https://medium.com/hardware-interfacing/custom-image-classifier-using-transfer-learning-in-pytorch-framework-c2f7f5155239
 ### Hyperparameters
 Before training the network, you can tune the network to your hyper parameters using the *'hyper_params.json'* script. But it is advisable not to change any parameters that you may not be aware of, doing so might mess up the network.
 
