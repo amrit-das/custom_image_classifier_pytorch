@@ -16,24 +16,20 @@ parser = argparse.ArgumentParser(description = 'To Predict from a trained model'
 parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
 parser.add_argument('-m','--model', dest = 'model_name', required = True, help='Path to the model')
 parser.add_argument('-n','--num_class',dest = 'num_classes', required = True, help='Number of training classes')
-parser.add_argument('-p','--predict', dest = 'predict', help='Path to the image file')
-#parser.add_argument('-s','--segregate', dest = 'predict', required = True, help='Path to the model')
+
+parser.add_argument('-t', action='store_true')
 
 args = parser.parse_args()
 
 path_to_model = "./models/"+args.model_name
 checkpoint = torch.load(path_to_model)
+seg_dir="segregation_folder"
+global class_map
+class_map={}
 
 model = resnet18(num_classes = int(args.num_classes))
 model.load_state_dict(checkpoint)
-model.eval()	
-seg_dir="segregation_folder"
-
-'''try:
-    os.mkdir(seg_dir)
-    print("Directory " , seg_dir ,  " Created ") 
-except OSError:
-    print("Directory " , seg_dir ,  " already created")'''
+model.eval()
 
 def predict_image(image_path):
     print("prediciton in progress")
@@ -55,28 +51,36 @@ def predict_image(image_path):
 
     index = output.data.numpy().argmax()
     return index
-'''def parameters():
+def parameters():
     hyp_param = open('param_predict.txt','r')
     param = {}
     for line in hyp_param:
-        l = line.strip('\n').split(':')'''
+        l = line.strip('\n').split(':')
 
 def class_mapping(index):
     mapping=open('class_mapping.txt','r')
-    class_map={}
     for line in mapping:
         l=line.strip('\n').split('~')
         class_map[l[1]]=l[0]
-        
-    '''# Create Directory for seggregation
-        dir_path="./"+seg_dir+"/"+l[0]
-        try:
-            os.mkdir(dir_path)
-            print("Directory " , dir_path ,  " Created ") 
-        except OSError:
-            print("Directory " , dir_path ,  " already created")'''
-
     return class_map[str(index)]
+
+def segregate():
+	try:
+	    os.mkdir(seg_dir)
+	    print("Directory " , seg_dir ,  " Created ") 
+	except OSError:
+	    print("Directory " , seg_dir ,  " already created")
+	for x in range (0,len(class_map)):
+		dir_path="./"+seg_dir+"/"+class_map[str(x)]
+		try:
+			os.mkdir(dir_path)
+			print("Directory " , dir_path ,  " Created ") 
+		except OSError:
+			print("Directory " , dir_path ,  " already created")
+
+
+
+
 
 if __name__ == "__main__":
 
@@ -86,10 +90,9 @@ if __name__ == "__main__":
     prediction = predict_image(imagepath)
     name = class_mapping(prediction)
     print("Time taken = ",time.time()-since)
-    
-    print("Predicted Class: ",name)
-    
-    
-    #save_path = "./"+seg_dir+"/"+name+"/"+args.image_name
-    #img.save(save_path)
-
+    if args.t:
+    	segregate()
+    	save_path = "./"+seg_dir+"/"+name+"/"+args.image_name
+    	img.save(save_path)
+    else:
+    	print("Predicted Class: ",name)
