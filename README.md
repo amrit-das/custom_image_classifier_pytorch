@@ -34,8 +34,8 @@ Creating machine learning models, for Image Clasification, built with the help o
 - Example dataset can be downloaded from this [Link](https://download.pytorch.org/tutorial/hymenoptera_data.zip)
 - Clone the repository and Install requirements 
 ```bash
-git clone https://github.com/amrit-das/Custom-Model-Training-PyTorch.git
-cd Custom-Model_training-PyTorch
+git clone https://github.com/amrit-das/custom_image_classifier_pytorch.git
+cd custom_image_classifier_pytorch
 sudo pip install -r requirements.txt
 ```
 ## Usage
