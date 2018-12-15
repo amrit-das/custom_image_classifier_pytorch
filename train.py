@@ -54,11 +54,18 @@ dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batc
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 
 class_names = image_datasets['train'].classes
-class_mapping=open('class_mapping.txt','w')
-
+#class_mapping=open('class_mapping.txt','w')
+class_map={}
 for x in range (0,len(class_names)):
-    class_mapping.write(class_names[x]+'~'+str(x)+'\n')
-class_mapping.close()
+    #class_mapping.write(class_names[x]+'~'+str(x)+'\n')
+    class_map[x]=class_names[x]
+
+with open('class_mapping.json', 'w') as outfile:  
+    json.dump(class_map, outfile, indent = 4)
+
+#class_mapping.close()
+
+
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print (device)
