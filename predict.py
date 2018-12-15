@@ -10,13 +10,14 @@ from PIL import Image
 import os
 import sys
 import argparse
+import time 
 
-#parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
+parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
 parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
 parser.add_argument('-m','--model', dest = 'model_name', required = True, help='Path to the model')
 parser.add_argument('-n','--num_class',dest = 'num_classes', required = True, help='Number of training classes')
 parser.add_argument('-p','--predict', dest = 'predict', help='Path to the image file')
-parser.add_argument('-s','--segregate', dest = 'predict', required = True, help='Path to the model')
+#parser.add_argument('-s','--segregate', dest = 'predict', required = True, help='Path to the model')
 
 args = parser.parse_args()
 
@@ -67,7 +68,7 @@ def class_mapping(index):
         l=line.strip('\n').split('~')
         class_map[l[1]]=l[0]
         
-	'''# Create Directory for seggregation
+    '''# Create Directory for seggregation
         dir_path="./"+seg_dir+"/"+l[0]
         try:
             os.mkdir(dir_path)
@@ -80,10 +81,15 @@ def class_mapping(index):
 if __name__ == "__main__":
 
     imagepath = "./Predict_Image/"+args.image_name
+    since = time.time()
     img = Image.open(imagepath)
     prediction = predict_image(imagepath)
     name = class_mapping(prediction)
+    print("Time taken = ",time.time()-since)
+    
     print("Predicted Class: ",name)
-    save_path = "./"+seg_dir+"/"+name+"/"+args.image_name
-    img.save(save_path)
+    
+    
+    #save_path = "./"+seg_dir+"/"+name+"/"+args.image_name
+    #img.save(save_path)
 

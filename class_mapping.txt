@@ -1,2 +1,20 @@
-ants~0
-bees~1
+Lemon~0
+black beans~1
+broccoli~2
+cabbage~3
+carrot~4
+chickpea~5
+corn~6
+elbow~7
+farafale~8
+fusili~9
+green bean~10
+mushroom~11
+onion~12
+paneer~13
+pea~14
+penne~15
+pinto beans~16
+potato~17
+rice~18
+tomato~19
