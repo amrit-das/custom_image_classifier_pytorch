@@ -11,12 +11,12 @@ import os
 import sys
 import argparse
 
-parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
-#parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
-#parser.add_argument('-m','--model', dest = 'model_name', required = True, help='Path to the model')
-#parser.add_argument('-n','--num_class',dest = 'num_classes', required = True, help='Number of training classes')
-#parser.add_argument('-p','--predict', dest = 'predict', help='Path to the image file')
-#parser.add_argument('-s','--segregate', dest = 'predict', required = True, help='Path to the model')
+#parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
+parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
+parser.add_argument('-m','--model', dest = 'model_name', required = True, help='Path to the model')
+parser.add_argument('-n','--num_class',dest = 'num_classes', required = True, help='Number of training classes')
+parser.add_argument('-p','--predict', dest = 'predict', help='Path to the image file')
+parser.add_argument('-s','--segregate', dest = 'predict', required = True, help='Path to the model')
 
 args = parser.parse_args()
 
@@ -27,11 +27,12 @@ model = resnet18(num_classes = int(args.num_classes))
 model.load_state_dict(checkpoint)
 model.eval()	
 seg_dir="segregation_folder"
-try:
+
+'''try:
     os.mkdir(seg_dir)
     print("Directory " , seg_dir ,  " Created ") 
 except OSError:
-    print("Directory " , seg_dir ,  " already created")
+    print("Directory " , seg_dir ,  " already created")'''
 
 def predict_image(image_path):
     print("prediciton in progress")
@@ -53,11 +54,11 @@ def predict_image(image_path):
 
     index = output.data.numpy().argmax()
     return index
-def parameters():
+'''def parameters():
     hyp_param = open('param_predict.txt','r')
     param = {}
     for line in hyp_param:
-        l = line.strip('\n').split(':')
+        l = line.strip('\n').split(':')'''
 
 def class_mapping(index):
     mapping=open('class_mapping.txt','r')
@@ -66,13 +67,13 @@ def class_mapping(index):
         l=line.strip('\n').split('~')
         class_map[l[1]]=l[0]
         
-	# Create Directory for seggregation
+	'''# Create Directory for seggregation
         dir_path="./"+seg_dir+"/"+l[0]
         try:
             os.mkdir(dir_path)
             print("Directory " , dir_path ,  " Created ") 
         except OSError:
-            print("Directory " , dir_path ,  " already created")
+            print("Directory " , dir_path ,  " already created")'''
 
     return class_map[str(index)]
 
