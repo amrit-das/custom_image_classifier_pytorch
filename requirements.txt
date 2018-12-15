@@ -1,4 +1,3 @@
-git
 opencv-python
 pandas
 pillow
