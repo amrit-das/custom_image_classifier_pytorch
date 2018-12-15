@@ -11,6 +11,7 @@ import os
 import sys
 import argparse
 import time 
+import json
 
 parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
 parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
@@ -24,8 +25,6 @@ args = parser.parse_args()
 path_to_model = "./models/"+args.model_name
 checkpoint = torch.load(path_to_model)
 seg_dir="segregation_folder"
-global class_map
-class_map={}
 
 model = resnet18(num_classes = int(args.num_classes))
 model.load_state_dict(checkpoint)
@@ -58,29 +57,25 @@ def parameters():
         l = line.strip('\n').split(':')
 
 def class_mapping(index):
-    mapping=open('class_mapping.txt','r')
-    for line in mapping:
-        l=line.strip('\n').split('~')
-        class_map[l[1]]=l[0]
-    return class_map[str(index)]
+    with open("class_mapping.json") as cm:
+        data = json.load(cm)
+    return data[str(index)]
 
 def segregate():
+    with open("class_mapping.json") as cm:
+        data = json.load(cm)
 	try:
 	    os.mkdir(seg_dir)
 	    print("Directory " , seg_dir ,  " Created ") 
 	except OSError:
 	    print("Directory " , seg_dir ,  " already created")
-	for x in range (0,len(class_map)):
-		dir_path="./"+seg_dir+"/"+class_map[str(x)]
+	for x in range (0,len(data)):
+		dir_path="./"+seg_dir+"/"+data[str(x)]
 		try:
 			os.mkdir(dir_path)
 			print("Directory " , dir_path ,  " Created ") 
 		except OSError:
 			print("Directory " , dir_path ,  " already created")
-
-
-
-
 
 if __name__ == "__main__":
 
