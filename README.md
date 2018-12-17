@@ -58,7 +58,7 @@ python predict.py
 ### Segregating 
 In order to segregate a set of images into different folders, place the images in Predict_Image folder and  run:
 ```bash
-python predict.py -t
+python predict.py --seg
 ```
 
 ## Version
