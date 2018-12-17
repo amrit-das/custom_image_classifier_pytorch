@@ -10,7 +10,7 @@ Creating machine learning models, for Image Clasification, built with the help o
 
 ##### train.py : To train the data
 
-##### predict.py : To predict from the trained model
+##### predict.py : To predict from the trained model or segregate the images into separate folders
 
 ##### hyper_params.json : The json file contains all the hyper patameters and related notations. 
 
@@ -53,9 +53,13 @@ python train.py
 ### Predicting
 In order to predict from trained model, place your image to be predicted in Predict_Image and run:
 ```bash
-python predict.py -i image_name_to_be_predicted -m model_name -n num_of_classes -t
+python predict.py
 ```
-Including -t means selecting segregating function and excluding it means selecting only predict function
+### Segregating 
+In order to segregate a set of images into different folders, place the images in Predict_Image folder and  run:
+```bash
+python predict.py -t
+```
 
 ## Version
 
