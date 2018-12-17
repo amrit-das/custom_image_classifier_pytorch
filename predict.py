@@ -16,33 +16,25 @@ import json
 parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
 parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
 parser.add_argument('-m','--model', dest = 'model_name', required = True, help='Path to the model')
-parser.add_argument('-n','--num_class',dest = 'num_classes', required = True, help='Number of training classes')
 
 parser.add_argument('-t', action='store_true')
 
 args = parser.parse_args()
 
-path_to_model = "./models/"+args.model_name
-checkpoint = torch.load(path_to_model)
-seg_dir="segregation_folder"
-
-model = resnet18(num_classes = int(args.num_classes))
-model.load_state_dict(checkpoint)
-model.eval()
-
 def predict_image(image_path):
     print("prediciton in progress")
     image = Image.open(image_path)
+
     transformation = transforms.Compose([
         transforms.RandomResizedCrop(224),
-        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ])
+
     image_tensor = transformation(image).float()
     image_tensor = image_tensor.unsqueeze_(0)
 
-    if torch.cuda.is_available():
+    if cuda:
         image_tensor.cuda()
 
     input = Variable(image_tensor)
@@ -50,6 +42,7 @@ def predict_image(image_path):
 
     index = output.data.numpy().argmax()
     return index
+
 def parameters():
     hyp_param = open('param_predict.txt','r')
     param = {}
@@ -59,7 +52,10 @@ def parameters():
 def class_mapping(index):
     with open("class_mapping.json") as cm:
         data = json.load(cm)
-    return data[str(index)]
+    if index == -1:
+        return len(data)
+    else:
+        return data[str(index)]
 
 def segregate():
     with open("class_mapping.json") as cm:
@@ -76,6 +72,24 @@ def segregate():
 			print("Directory " , dir_path ,  " Created ") 
 		except OSError:
 			print("Directory " , dir_path ,  " already created")
+
+
+path_to_model = "./models/"+args.model_name
+checkpoint = torch.load(path_to_model)
+seg_dir="segregation_folder"
+
+cuda = torch.cuda.is_available()
+
+num_class = class_mapping(index=-1)
+print num_class
+model = resnet18(num_classes = num_class)
+
+if cuda:
+	model.load_state_dict(checkpoint)
+else:
+	model.load_state_dict(checkpoint, map_location = 'cpu')
+
+model.eval()
 
 if __name__ == "__main__":
 
