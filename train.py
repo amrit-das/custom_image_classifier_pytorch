@@ -68,7 +68,7 @@ print (device)
 
 def save_models(epochs, model):
     print()
-    torch.save(model.state_dict(), "./models/custom_model{}.model".format(epochs))
+    torch.save(model.state_dict(), "./models/trained.model")
     print("****----Checkpoint Saved----****")
     print()
 

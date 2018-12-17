@@ -14,10 +14,9 @@ import time
 import json
 
 parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
-parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
-parser.add_argument('-m','--model', dest = 'model_name', required = True, help='Path to the model')
 
-parser.add_argument('-t', action='store_true')
+parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
+parser.add_argument('-s', '--seg', dest ='segment', action='store_true')
 
 args = parser.parse_args()
 
@@ -74,7 +73,7 @@ def segregate():
 			print("Directory " , dir_path ,  " already created")
 
 
-path_to_model = "./models/"+args.model_name
+path_to_model = "./models/"+'trained.model'
 checkpoint = torch.load(path_to_model)
 seg_dir="segregation_folder"
 
@@ -99,7 +98,8 @@ if __name__ == "__main__":
     prediction = predict_image(imagepath)
     name = class_mapping(prediction)
     print("Time taken = ",time.time()-since)
-    if args.t:
+    
+    if args.segment:
     	segregate()
     	save_path = "./"+seg_dir+"/"+name+"/"+args.image_name
     	img.save(save_path)
