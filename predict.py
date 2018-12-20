@@ -7,6 +7,8 @@ import numpy as np
 from torch.autograd import Variable
 import torch.functional as F
 from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw 
 import os
 import sys
 import argparse
@@ -15,7 +17,7 @@ import json
 
 parser = argparse.ArgumentParser(description = 'To Predict from a trained model')
 
-parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
+#parser.add_argument('-i','--image', dest = 'image_name', required = True, help='Path to the image file')
 parser.add_argument('-s', '--seg', dest ='segment', action='store_true')
 
 args = parser.parse_args()
@@ -91,17 +93,24 @@ else:
 model.eval()
 
 if __name__ == "__main__":
-
-    imagepath = "./Predict_Image/"+args.image_name
-    since = time.time()
-    img = Image.open(imagepath)
-    prediction = predict_image(imagepath)
-    name = class_mapping(prediction)
-    print("Time taken = ",time.time()-since)
-    
-    if args.segment:
-    	segregate()
-    	save_path = "./"+seg_dir+"/"+name+"/"+args.image_name
-    	img.save(save_path)
-    else:
-    	print("Predicted Class: ",name)
+    images = os.listdir("Predict_Image")
+    for x in range (0,len(images)):
+        if 'md' not in images[x]:
+            imagepath = "./Predict_Image/"+images[x]
+            since = time.time()
+            img = Image.open(imagepath)
+            prediction = predict_image(imagepath)
+            name = class_mapping(prediction)
+            print("Time taken = ",time.time()-since)
+            if args.t:
+                segregate()
+                save_path = "./"+seg_dir+"/"+name+"/"+images[x]
+                img.save(save_path)
+            else:
+                print("Predicted Class: ",name)
+                '''img = Image.open(imagepath)
+                draw = ImageDraw.Draw(img)
+                font = ImageFont.truetype("arial.ttf",15)
+                # draw.text((x, y),"Sample Text",(r,g,b))
+                draw.text((0, 0),images[x],(255,255,255),font=font)
+                img.show(images[x])'''
