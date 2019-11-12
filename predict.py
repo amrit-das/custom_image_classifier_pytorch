@@ -8,15 +8,19 @@ from PIL import Image
 import argparse
 import json
 
+with open("hyper_params.json") as hp:
+    data = json.load(hp)
+    num_classes = data["num_classes"]
+
 device = torch.device("cuda")
 model_path = "./models/trained.model"
 checkpoint = torch.load(model_path)
-num_class = class_mapping(index=-1)
-model = resnet18(num_classes=21)
+num_class = 
+model = resnet18(num_classes)
 model.load_state_dict(checkpoint)
 model.to(device)
 model.eval()
-
+    
 data_transforms = {
     'predict': transforms.Compose([
         transforms.RandomResizedCrop(224),
