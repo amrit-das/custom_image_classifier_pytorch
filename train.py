@@ -12,8 +12,7 @@ import time
 import os
 import copy
 from cross_entropy import CrossEntropyLoss
-import utils 
-
+#import utils
 
 
 input_dim = 224 # The input dimension for ResNet is 224
@@ -94,7 +93,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
             running_loss = 0.0
             running_corrects = 0
-            losses = utils.AverageMeter()
+            #losses = utils.AverageMeter()
 
             for inputs, labels in dataloaders[phase]:
                 inputs = inputs.to(device)
@@ -106,7 +105,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                     outputs = model(inputs)
                     _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, labels)
-                    losses.update(loss.data.cpu().numpy(), labels.size(0))
+                    #losses.update(loss.data.cpu().numpy(), labels.size(0))
 
                     if phase == 'train':
                         loss.backward()
@@ -126,8 +125,8 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
         
-        plotter.plot('loss',phase,'Class Loss',epoch,losses.avg)
-        plotter.plot('acc',phase,'Class Accuracy',epoch,acc)
+        #plotter.plot('loss',phase,'Class Loss',epoch,losses.avg)
+        #plotter.plot('acc',phase,'Class Accuracy',epoch,epoch_acc)
 
     print('Best val Acc: {:4f}'.format(best_acc))
 
@@ -147,5 +146,5 @@ optimizer_ft = optim.SGD(model_ft.parameters(), lr=lr, momentum=momentum)
 
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
 
-plotter = utils.VisdomLinePlotter(env_name = 'Classification Test')
+#plotter = utils.VisdomLinePlotter(env_name = 'Classification Test')
 model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,num_epochs=num_epochs)
