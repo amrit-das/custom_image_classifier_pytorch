@@ -1,7 +1,7 @@
 {
     "Comments"          :   ["Except num classes do not modify only if you know what are you upto"],
-    "root_directory"    :   "Dataset",
-    "num_classes"       :   21,
+    "root_directory"    :   "dataset",
+    "num_classes"       :   507,
     "num_epochs"        :   500,
     "batch_size"        :   12,
     "num_workers"       :   4,

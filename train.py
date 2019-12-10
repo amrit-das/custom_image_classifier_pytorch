@@ -11,6 +11,7 @@ from matplotlib import pyplot as plt
 import time
 import os
 import copy
+from cross_entropy import CrossEntropyLoss
 
 input_dim = 224 # The input dimension for ResNet is 224
 
@@ -130,7 +131,7 @@ model_ft.fc = nn.Linear(num_ftrs, num_classes)
 
 model_ft = model_ft.to(device)
 
-criterion = nn.CrossEntropyLoss()
+criterion = CrossEntropyLoss(smooth_eps=0.1)
 
 
 optimizer_ft = optim.SGD(model_ft.parameters(), lr=lr, momentum=momentum)
