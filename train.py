@@ -11,9 +11,9 @@ from matplotlib import pyplot as plt
 import time
 import os
 import copy
-from cross_entropy import CrossEntropyLoss
-from utils import AverageMeter, VisdomLinePlotter
-from sampler import ImbalancedDatasetSampler
+#from cross_entropy import CrossEntropyLoss
+#from utils import AverageMeter, VisdomLinePlotter
+#from sampler import ImbalancedDatasetSampler
 
 input_dim = 224 # The input dimension for ResNet is 224
 
@@ -51,16 +51,16 @@ image_datasets = {x: datasets.ImageFolder(os.path.join(root_dir, x),
                                           data_transforms[x])
             for x in ['train', 'val']}
 
-sampler = ImbalancedDatasetSampler(image_datasets['train'])
 
-#dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size, sampler = sampler,
-#                                            shuffle=False, num_workers=num_workers)
-#            for x in ['train', 'val']}
 
-train_loaders = torch.utils.data.DataLoader(image_datasets['train'], batch_size = batch_size, sampler = sampler, shuffle = False, num_workers = num_workers)
-test_loaders = torch.utils.data.DataLoader(image_datasets['val'], batch_size = batch_size, shuffle = False, num_workers = num_workers)
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size, sampler = sampler,
+                                            shuffle=False, num_workers=num_workers)
+            for x in ['train', 'val']}
 
-dataloaders = {'train':train_loaders,'val':test_loaders}
+#train_loaders = torch.utils.data.DataLoader(image_datasets['train'], batch_size = batch_size, sampler = sampler, shuffle = False, num_workers = num_workers)
+#test_loaders = torch.utils.data.DataLoader(image_datasets['val'], batch_size = batch_size, shuffle = False, num_workers = num_workers)
+
+#dataloaders = {'train':train_loaders,'val':test_loaders}
 
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 
