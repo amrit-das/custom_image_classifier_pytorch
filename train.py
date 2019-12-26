@@ -53,7 +53,7 @@ image_datasets = {x: datasets.ImageFolder(os.path.join(root_dir, x),
 
 
 
-dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size, sampler = sampler,
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size,
                                             shuffle=False, num_workers=num_workers)
             for x in ['train', 'val']}
 
@@ -131,7 +131,6 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                 save_models(epoch,model)
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
-        
         #plotter.plot('loss',phase,'Class Loss',epoch,losses.avg)
         #plotter.plot('acc',phase,'Class Accuracy',epoch,epoch_acc)
 
@@ -140,13 +139,13 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     model.load_state_dict(best_model_wts)
     return model
 
-model_ft = models.resnet18(pretrained=True)
+model_ft = models.resnet50(pretrained=True)
 num_ftrs = model_ft.fc.in_features
 model_ft.fc = nn.Linear(num_ftrs, num_classes)
 
 model_ft = model_ft.to(device)
 
-criterion = CrossEntropyLoss(smooth_eps=0.1)
+criterion = nn.CrossEntropyLoss()
 
 
 optimizer_ft = optim.SGD(model_ft.parameters(), lr=lr, momentum=momentum)
