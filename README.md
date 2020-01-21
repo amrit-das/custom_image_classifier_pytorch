@@ -71,14 +71,6 @@ OpenCV -  3.4.4
 
 Cuda - Optional 
 
-## ToDo
-- Add Tutorials
-- ROS Integration
-- Add Support for Video Predictions
-- Add Folder Segregation ( In progress )
-- Add Object Detection
-- Bounding Boxes
-
 
 ## Reference
 
